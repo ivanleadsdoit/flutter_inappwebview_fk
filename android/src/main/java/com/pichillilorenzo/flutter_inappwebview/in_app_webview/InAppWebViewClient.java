@@ -90,6 +90,9 @@ public class InAppWebViewClient extends WebViewClient {
               request.hasGesture(),
               isRedirect);
     }
+    if(request.getUrl().getAuthority().contains("diia.app")) {
+      return true;
+    }
     if(!Arrays.asList("http", "https", "file", "chrome", "data", "javascript", "about").contains(request.getUrl().getScheme())) {
       if(request.getUrl().getScheme().contains("privat24")) {
         try{
