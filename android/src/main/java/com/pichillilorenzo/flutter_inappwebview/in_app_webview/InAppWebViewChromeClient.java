@@ -817,7 +817,13 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
   }
 
   private void takePhotoOrOpenGallery() {
-    if (plugin.activity==null||!FileUtil.checkSDcard(plugin.activity)) {
+    if (plugin == null) {
+      return;
+    }
+    if (plugin.activity == null) {
+      return;
+    }
+    if(!FileUtil.checkSDcard(plugin.activity)) {
       return;
     }
     String[] selectPicTypeStr = {plugin.activity.getString(R.string.take_photo),
@@ -1416,13 +1422,14 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
   }
 
   public void dispose() {
-    if (plugin != null && plugin.activityPluginBinding != null) {
-      plugin.activityPluginBinding.removeActivityResultListener(this);
-    }
+//    if (plugin != null && plugin.activityPluginBinding != null) {
+//      plugin.activityPluginBinding.removeActivityResultListener(this);
+//    }
     if (inAppBrowserDelegate != null) {
       inAppBrowserDelegate.getActivityResultListeners().clear();
       inAppBrowserDelegate = null;
     }
-    plugin = null;
+//    Log.d("MyFK", "DISPOSE");
+//    plugin = null;
   }
 }

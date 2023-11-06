@@ -2,7 +2,9 @@ package com.pichillilorenzo.flutter_inappwebview.in_app_webview;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
@@ -74,6 +76,10 @@ public class InAppWebViewClient extends WebViewClient {
     InAppWebView webView = (InAppWebView) view;
 
 
+    if(request.getUrl().getAuthority().contains("instagram") || request.getUrl().getAuthority().contains("youtube") || request.getUrl().getAuthority().contains("watsapp") || request.getUrl().getAuthority().contains("facebook") || request.getUrl().getAuthority().contains("telegram") || request.getUrl().getAuthority().contains("play.google")) {
+      return true;
+    }
+
     if (webView.options.useShouldOverrideUrlLoading){
       boolean isRedirect = false;
       if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_RESOURCE_REQUEST_IS_REDIRECT)) {
@@ -90,23 +96,95 @@ public class InAppWebViewClient extends WebViewClient {
               request.hasGesture(),
               isRedirect);
     }
-    if(request.getUrl().getAuthority().contains("diia.app")) {
+
+    if(request.getUrl().getAuthority().contains("diia.app") && webView.options.useShouldOverrideUrlLoading) {
       return true;
     }
-    if(!Arrays.asList("http", "https", "file", "chrome", "data", "javascript", "about").contains(request.getUrl().getScheme())) {
-      if(request.getUrl().getScheme().contains("privat24")) {
-        try{
+//    if(request.getUrl().getScheme().contains("intent")) {
+//      return true;
+//    }
+
+    if (request.getUrl().getScheme().contains("https") || request.getUrl().getScheme().contains("http")) {
+     return super.shouldOverrideUrlLoading(view, request);
+    } else {
+      try{
           assert webView.plugin != null;
           assert webView.plugin.activity != null;
-          webView.plugin.activity.startActivity(new Intent("android.intent.action.VIEW", request.getUrl()));
+          webView.plugin.activity.startActivity(new Intent(Intent.ACTION_VIEW, request.getUrl()));
           return true;
         } catch (Throwable ignored) {
           return true;
         }
-      } else {
-        return  true;
-      }
-    } else return false;
+    }
+//
+//    if (request.getUrl().getScheme().contains("https") || request.getUrl().getScheme().contains("http")) {
+//     return super.shouldOverrideUrlLoading(view, request);
+//    }
+
+//    if(request.getUrl().getScheme().contains("privat24")) {
+//        try{
+//          assert webView.plugin != null;
+//          assert webView.plugin.activity != null;
+//          webView.plugin.activity.startActivity(new Intent(Intent.ACTION_VIEW, request.getUrl()));
+//          return true;
+//        } catch (Throwable ignored) {
+//          return true;
+//        }
+//      }
+
+    //try to find browse activity to handle uri
+//    Uri parsedUri = request.getUrl();
+//    assert webView.plugin != null;
+//    assert webView.plugin.activity != null;
+//    PackageManager packageManager = webView.plugin.activity.getPackageManager();
+//    Intent browseIntent = new Intent(Intent.ACTION_VIEW).setData(parsedUri);
+//    if (browseIntent.resolveActivity(packageManager) != null) {
+//      webView.plugin.activity.startActivity(browseIntent);
+//      return true;
+//    }
+    //if not activity found, try to parse intent://
+//    if (request.getUrl().toString().startsWith("intent:")) {
+//      try {
+//        Intent intent = Intent.parseUri(request.getUrl().toString(), Intent.URI_INTENT_SCHEME);
+//        if (intent.resolveActivity(webView.plugin.activity.getPackageManager()) != null) {
+//          webView.plugin.activity.startActivity(intent);
+//          return true;
+//        }
+//        //try to find fallback url
+//        String fallbackUrl = intent.getStringExtra("browser_fallback_url");
+//        if (fallbackUrl != null) {
+//          webView.loadUrl(new URLRequest(fallbackUrl, "GET", null, request.getRequestHeaders()));
+//          return true;
+//        }
+//        //invite to install
+//        Intent marketIntent = new Intent(Intent.ACTION_VIEW).setData(
+//                Uri.parse("market://details?id=" + intent.getPackage()));
+//        if (marketIntent.resolveActivity(packageManager) != null) {
+//          webView.plugin.activity.startActivity(marketIntent);
+//          return true;
+//        }
+//      } catch (URISyntaxException e) {
+//        //not an intent uri
+//      }
+//    }
+//    return true;//do nothing in other cases
+
+
+
+//    if(!Arrays.asList("http", "https", "file", "chrome", "data", "javascript", "about").contains(request.getUrl().getScheme())) {
+//      if(request.getUrl().getScheme().contains("privat24")) {
+//        try{
+//          assert webView.plugin != null;
+//          assert webView.plugin.activity != null;
+//          webView.plugin.activity.startActivity(new Intent("android.intent.action.VIEW", request.getUrl()));
+//          return true;
+//        } catch (Throwable ignored) {
+//          return true;
+//        }
+//      } else {
+//        return true;
+//      }
+//    } else return false;
 
   }
 
