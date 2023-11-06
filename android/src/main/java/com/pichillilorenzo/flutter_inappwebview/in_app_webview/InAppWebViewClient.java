@@ -76,7 +76,7 @@ public class InAppWebViewClient extends WebViewClient {
     InAppWebView webView = (InAppWebView) view;
 
 
-    if(request.getUrl().getAuthority().contains("instagram") || request.getUrl().getAuthority().contains("youtube") || request.getUrl().getAuthority().contains("watsapp") || request.getUrl().getAuthority().contains("facebook") || request.getUrl().getAuthority().contains("telegram") || request.getUrl().getAuthority().contains("play.google")) {
+    if(request.getUrl().getAuthority().contains("instagram") || request.getUrl().getAuthority().contains("youtube") || request.getUrl().getAuthority().contains("watsapp") || request.getUrl().getAuthority().contains("facebook") || request.getUrl().getAuthority().contains("t.me") || request.getUrl().getAuthority().contains("play.google") || request.getUrl().getAuthority().contains("tiktok") || request.getUrl().getAuthority().contains("twitter")) {
       return true;
     }
 
